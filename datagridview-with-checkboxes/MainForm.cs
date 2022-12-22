@@ -38,11 +38,9 @@ namespace datagridview_with_checkboxes
         }
         BindingList<Item> Items = new BindingList<Item>();
     }
-    class Item : INotifyPropertyChanged
+    class Item
     {
         public bool Selected { get; set; }
         public string Name { get; set; } = string.Empty;
-
-        public event PropertyChangedEventHandler? PropertyChanged;
     }
 }
