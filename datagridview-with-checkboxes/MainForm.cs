@@ -16,10 +16,9 @@ namespace datagridview_with_checkboxes
             dataGridView.DataSource = Items;
             Items.Add(new Item { Name = "AZI" });
             Items.Add(new Item { Name = "FRAN" });
-            dataGridView.Columns[nameof(Item.IsChecked)].AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
+            dataGridView.Columns[nameof(Item.Selected)].AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
             dataGridView.Columns[nameof(Item.Name)].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
-            Items.ListChanged += onListChanged;
             dataGridView.CellContentClick += onCellContentClick;
         }
 
@@ -28,36 +27,20 @@ namespace datagridview_with_checkboxes
             if (dataGridView.CurrentCell is DataGridViewCheckBoxCell)
             {
                 dataGridView.EndEdit();
+
+                Item item = Items[e.RowIndex];
+                textBoxLast.Text = item.Selected ? item.Name : string.Empty;
+                textBoxAll.Text =
+                    string.Join(
+                        ",",
+                        Items.Where(_=>_.Selected).Select(_ => _.Name));
             }
         }
-
-        private void onListChanged(object? sender, ListChangedEventArgs e)
-        {
-            if(e.ListChangedType.Equals(ListChangedType.ItemChanged))
-            {
-
-            }
-        }
-
         BindingList<Item> Items = new BindingList<Item>();
     }
     class Item : INotifyPropertyChanged
     {
-        bool _isChecked = false;
-        public bool IsChecked
-        {
-            get => _isChecked;
-            set
-            {
-                if (!Equals(_isChecked, value))
-                {
-                    _isChecked = value;
-                    PropertyChanged?.Invoke(
-                        this, 
-                        new PropertyChangedEventArgs(nameof(IsChecked)));
-                }
-            }
-        }
+        public bool Selected { get; set; }
         public string Name { get; set; } = string.Empty;
 
         public event PropertyChangedEventHandler? PropertyChanged;
